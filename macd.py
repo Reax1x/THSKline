@@ -17,17 +17,21 @@ def readClosePrice(path):
 	
     return closeArray
 
+def EMA(lastEma , price , w):
+    ema = lastEma + (price - lastEma)/2*(w+1)
+    return ema
+
 def MACD(closePrice , fast , slow , mid):
     diff=dea=macd=bar = 0
     ema12= ema26=0
     
     for i in range(1 , len(closePrice)-1):
 	if i == 1:
-	    ema12 = closePrice[i-1] + (closePrice[i] - closePrice[i-1])*2/(fast+1)
-	    ema26 = closePrice[i-1] + (closePrice[i] - closePrice[i-1])*2/(slow+1)
+	    ema12 = EMA(closePrice[i-1], closePrice[i], fast)
+	    ema26 = EMA(closePrice[i-1], closePrice[i], slow)
 	else:
-	    ema12 = ema12+(closePrice[i] - ema12)*2/(fast+1)
-	    ema26 = ema26+(closePrice[i] - ema26)*2/(slow+1)
+	    ema12 = EMA(ema12, closePrice[i], fast)
+	    ema26 = EMA(ema12, closePrice[i], slow)
 	diff = ema12 - ema26
 	dea = 0+(diff)*2/(mid+1)
 	bar = 2*(diff-dea)
